@@ -28,8 +28,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         changes = 0;
 
         // Atribui cada ponto ao centróide mais próximo
-        omp_set_num_threads(NUM_THREADS);
-        #pragma omp parallel for reduction(+:changes)
+
         for (int i = world_rank; i < NUM_POINTS; i += world_size) {
             int nearest_centroid = 0;
             double min_distance = euclidean_distance(points[i], centroids[0], NUM_DIMENSIONS);
@@ -53,8 +52,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         int local_counts[K] = {0};
 
         // Paraleliza a acumulação dos centróides locais com OpenMP
-        omp_set_num_threads(NUM_THREADS);
-        #pragma omp parallel for
+
         for (int i = world_rank; i < NUM_POINTS; i += world_size) {
             int cluster = labels[i];
             local_counts[cluster]++;
